@@ -42,10 +42,20 @@ Url подключения к БД<br>
 
 Генерация ключа:
 ```
-keytool -genkeypair -alias springboot -keyalg RSA -keysize 4096 \
-  -validity 3650 -keystore keystore.p12 \
+keytool -genkeypair -alias spring -keyalg RSA -keysize 4096 \
+  -validity 3650 -keystore spring.p12 \
   -storetype PKCS12 -storepass changeit -keypass changeit \
   -dname "CN=localhost, OU=Development, O=Company, L=City, ST=State, C=RU"
+```
+
+Экспорт сертификата:
+```
+keytool -exportcert -alias spring -keystore spring.p12 -storetype PKCS12 -storepass changeit -file spring.crt
+```
+
+Добавление сертификата в trustore:
+```
+keytool -importcert -alias spring -file spring.crt -keystore spring-truststore.p12 -storetype PKCS12 -storepass changeit -noprompt
 ```
 
 Сбор jar файла с пропуском тестов<br>
