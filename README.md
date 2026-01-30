@@ -61,6 +61,8 @@ keytool -importcert -alias spring -file spring.crt -keystore spring-truststore.p
 Сбор jar файла с пропуском тестов<br>
 `mvn package -DskipTests`
 
-Ссылка на фронтенд - https://github.com/stoneshik/third-lab-soa-frontend
+### Ссылки на репозитории лабораторной
 
-Ссылка на второй вызываемый сервис реализованный на JAX-RS - https://github.com/stoneshik/third-lab-soa-frontend
+1. Ссылка на основной вызываемый сервис реализованный на Spring Boot - https://github.com/stoneshik/third-lab-soa
+2. Ссылка на второй вызывающий сервис реализованный на JAX-RS - https://github.com/stoneshik/third-lab-soa-second
+3. Ссылка на фронтенд - https://github.com/stoneshik/third-lab-soa-frontend
