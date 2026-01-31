@@ -78,6 +78,7 @@ cat spring.key spring.crt > spring.pem
 ```
 make TARGET=linux-glibc USE_OPENSSL=1 USE_ZLIB=1 USE_PCRE=1
 make install PREFIX=$HOME/haproxy
+mkdir ~/haproxy/etc
 ```
 
 Запуск:
@@ -108,6 +109,11 @@ SOA_SERVICE_PORT=33511 java -jar soa-0.0.1-SNAPSHOT.jar
 SOA_SERVICE_PORT=33521 java -jar soa-0.0.1-SNAPSHOT.jar
 ```
 
+Устанавливаем Consul:
+```
+sudo apt install consul
+```
+
 Запуск consul с заданием значений всех портов:
 ```
 consul agent -dev -ui \
@@ -120,10 +126,21 @@ consul agent -dev -ui \
   -dns-port=33414
 ```
 
+Остановка consul:
+```
+consul leave -http-addr=127.0.0.1:33410
+```
+
 Открыть consul:
 ```
 http://localhost:33410
 ```
+
+**Порты которые нужно пробросить:**
+- 33510 - обращение к сервисам на spring
+- 33610 - обращение к сервисам на wildfly
+- 33401 - статистика haproxy
+- 33410 - consul
 
 ### Ссылки на репозитории лабораторной
 
