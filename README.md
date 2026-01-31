@@ -31,14 +31,20 @@
 
 Пример `.env` файла находится в `env.example`
 
-Подключение к серверу:<br>
-`ssh s33xxxx@se.ifmo.ru -p 2222`
+Подключение к серверу:
+```
+ssh s33xxxx@se.ifmo.ru -p 2222
+```
 
-Проброс порта для helios:<br>
-`ssh -L 8080:localhost:33xxxx s33xxxx@se.ifmo.ru -p 2222`
+Проброс порта для helios:
+```
+ssh -L 8080:localhost:33xxxx s33xxxx@se.ifmo.ru -p 2222
+```
 
-Url подключения к БД<br>
-`jdbc:postgresql://localhost:5432/studs`
+Url подключения к БД
+```
+jdbc:postgresql://localhost:5432/studs
+```
 
 Генерация ключа:
 ```
@@ -58,8 +64,39 @@ keytool -exportcert -alias spring -keystore spring.p12 -storetype PKCS12 -storep
 keytool -importcert -alias spring -file spring.crt -keystore spring-truststore.p12 -storetype PKCS12 -storepass changeit -noprompt
 ```
 
-Сбор jar файла с пропуском тестов<br>
-`mvn package -DskipTests`
+Экспортируем сертификат и ключ для HAProxy:
+```
+# 1. Экспорт приватного ключа
+openssl pkcs12 -in spring.p12 -nocerts -nodes -out spring.key -passin pass:changeit
+# 2. Экспорт сертификата
+openssl pkcs12 -in spring.p12 -clcerts -nokeys -out spring.crt -passin pass:changeit
+# 3. Объединяем в один PEM для HAProxy
+cat spring.key spring.crt > spring.pem
+```
+
+Установка HAProxy:
+```
+make TARGET=linux-glibc USE_OPENSSL=1 USE_ZLIB=1 USE_PCRE=1
+make install PREFIX=$HOME/haproxy
+```
+
+Запуск:
+```
+~/haproxy/sbin/haproxy -f ~/haproxy/etc/haproxy.cfg
+```
+
+Сбор jar файла с пропуском тестов
+```
+mvn package -DskipTests
+```
+
+Запуск сервисов:
+```
+SOA_SERVICE_PORT=33511 java -jar soa-0.0.1-SNAPSHOT.jar
+```
+```
+SOA_SERVICE_PORT=33521 java -jar soa-0.0.1-SNAPSHOT.jar
+```
 
 ### Ссылки на репозитории лабораторной
 
