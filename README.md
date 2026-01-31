@@ -85,6 +85,11 @@ make install PREFIX=$HOME/haproxy
 ~/haproxy/sbin/haproxy -f ~/haproxy/etc/haproxy.cfg
 ```
 
+Копирование конфига:
+```
+cp haproxy.cfg ~/haproxy/etc/haproxy.cfg
+```
+
 Сбор jar файла с пропуском тестов
 ```
 mvn package -DskipTests
@@ -96,6 +101,23 @@ SOA_SERVICE_PORT=33511 java -jar soa-0.0.1-SNAPSHOT.jar
 ```
 ```
 SOA_SERVICE_PORT=33521 java -jar soa-0.0.1-SNAPSHOT.jar
+```
+
+Запуск consul с заданием значений всех портов:
+```
+consul agent -dev -ui \
+  -client=0.0.0.0 \
+  -bind=127.0.0.1 \
+  -http-port=33410 \
+  -server-port=33411 \
+  -serf-lan-port=33412 \
+  -serf-wan-port=33413 \
+  -dns-port=33414
+```
+
+Открыть consul:
+```
+http://localhost:33410
 ```
 
 ### Ссылки на репозитории лабораторной

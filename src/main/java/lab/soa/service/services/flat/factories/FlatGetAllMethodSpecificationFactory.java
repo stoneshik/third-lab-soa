@@ -22,7 +22,7 @@ public class FlatGetAllMethodSpecificationFactory {
 
     public Specification<Flat> create(List<FlatFilterParam> filterParams) {
         if (filterParams == null) {
-            return Specification.unrestricted();
+            return Specification.where(null);
         }
         Specification<Flat> globalSpecification = null;
         for (FlatFilterParam flatFilterParam: filterParams) {

@@ -200,7 +200,7 @@ public class FlatService {
             Sort.by(sortDirection, property)
         );
         Page<Flat> foundPage = flatRepository.findAll(
-            Specification.unrestricted(),
+            Specification.where(null),
             pageable
         );
         List<FlatResponseDto> flatResponseDtos = new ArrayList<>();
