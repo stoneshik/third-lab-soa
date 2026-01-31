@@ -74,31 +74,9 @@ openssl pkcs12 -in spring.p12 -clcerts -nokeys -out spring.crt -passin pass:chan
 cat spring.key spring.crt > spring.pem
 ```
 
-Установка HAProxy:
-```
-make TARGET=linux-glibc USE_OPENSSL=1 USE_ZLIB=1 USE_PCRE=1
-make install PREFIX=$HOME/haproxy
-mkdir ~/haproxy/etc
-```
-
-Запуск:
-```
-~/haproxy/sbin/haproxy -f ~/haproxy/etc/haproxy.cfg
-```
-
-Копирование конфига:
-```
-cp haproxy.cfg ~/haproxy/etc/haproxy.cfg
-```
-
 Сбор jar файла с пропуском тестов
 ```
 mvn package -DskipTests
-```
-
-Открыть статистику haproxy:
-```
-http://localhost:33401/stats
 ```
 
 Запуск сервисов:
@@ -134,6 +112,44 @@ consul leave -http-addr=127.0.0.1:33410
 Открыть consul:
 ```
 http://localhost:33410
+```
+
+Установка HAProxy:
+```
+sudo apt update
+sudo apt install haproxy -y
+```
+
+Копируем сертификаты
+```
+sudo mkdir /etc/haproxy/certs
+sudo cp certs/spring.pem /etc/haproxy/certs/spring.pem
+sudo cp certs/wildfly.pem /etc/haproxy/certs/wildfly.pem
+```
+
+Копируем конфиг для consul-template
+```
+sudo cp haproxy.cfg.ctmpl /etc/haproxy/haproxy.cfg.ctmpl
+```
+
+Управление haproxy:
+```
+sudo systemctl start haproxy
+sudo systemctl status haproxy
+sudo systemctl stop haproxy
+sudo journalctl -u haproxy -f
+```
+
+Открыть статистику haproxy:
+```
+http://localhost:33401/stats
+```
+
+Запуск consul-template:
+```
+sudo consul-template \
+  -consul-addr=localhost:33410 \
+  -template="/etc/haproxy/haproxy.cfg.ctmpl:/etc/haproxy/haproxy.cfg:sudo systemctl reload haproxy"
 ```
 
 **Порты которые нужно пробросить:**
