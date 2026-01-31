@@ -95,6 +95,11 @@ cp haproxy.cfg ~/haproxy/etc/haproxy.cfg
 mvn package -DskipTests
 ```
 
+Открыть статистику haproxy:
+```
+http://localhost:33401/stats
+```
+
 Запуск сервисов:
 ```
 SOA_SERVICE_PORT=33511 java -jar soa-0.0.1-SNAPSHOT.jar
