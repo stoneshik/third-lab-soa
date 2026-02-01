@@ -5,15 +5,19 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,18 +28,30 @@ import lab.soa.domain.models.House;
 import lab.soa.domain.models.Transport;
 import lab.soa.domain.models.View;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
+@Testcontainers
+@ActiveProfiles("test")
 abstract class SpringBootApplicationTest {
     private static LocalDateTime firstFlatCreationDate;
 
     @Container
-    @ServiceConnection
-    static final PostgreSQLContainer<?> postgresSqlContainer =
-        new PostgreSQLContainer<>("postgres:16.4")
-            .withReuse(false)
-            .withDatabaseName("is_service");
+    static final PostgreSQLContainer<?> postgresSqlContainer;
+
+    static {
+        postgresSqlContainer = new PostgreSQLContainer<>("postgres:16.4")
+                .withReuse(false)
+                .withDatabaseName("is_service");
+        postgresSqlContainer.start();
+    }
+
+    @DynamicPropertySource
+    static void registerPgProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgresSqlContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgresSqlContainer::getUsername);
+        registry.add("spring.datasource.password", postgresSqlContainer::getPassword);
+    }
 
     @AfterAll
     void stopContainers() {

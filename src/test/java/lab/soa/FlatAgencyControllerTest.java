@@ -8,12 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import lab.soa.domain.models.BalconyType;
 import lab.soa.domain.models.PriceType;
 import lab.soa.domain.models.SortType;
 import lab.soa.domain.models.TransportType;
 
+@Testcontainers
 class FlatAgencyControllerTest extends SpringBootApplicationTest {
     @Test
     void findWithBalcony_ReturnsResponseWithStatusOk() throws Exception {
