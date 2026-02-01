@@ -89,7 +89,9 @@ SOA_SERVICE_PORT=33521 java -jar soa-0.0.1-SNAPSHOT.jar
 
 Устанавливаем Consul:
 ```
-sudo apt install consul
+unzip consul_*_linux_amd64.zip
+sudo mv consul /usr/local/bin/
+consul --version
 ```
 
 Запуск consul с заданием значений всех портов:
@@ -143,6 +145,13 @@ sudo journalctl -u haproxy -f
 Открыть статистику haproxy:
 ```
 http://localhost:33401/stats
+```
+
+Установка consul-template:
+```
+unzip consul-template_*_linux_amd64.zip
+sudo mv consul-template /usr/local/bin/
+consul-template --version
 ```
 
 Запуск consul-template:
